@@ -4,29 +4,28 @@ class mqProducer(mqProducerInterface):
     def __init__(self, routing_key: str, exchange_name: str) -> None:
         self.routing_key = routing_key
         self.exchange_name = exchange_name
-        self.Connection = None
-        self.Channel = None
+        self.connection = None
+        self.channel = None
         self.setupRMQConnection()
 
     def setupRMQConnection(self) -> None:
         # We'll first set up the connection and channel
-        connection = pika.BlockingConnection(
+        self.connection = pika.BlockingConnection(
             pika.ConnectionParameters(host='Rabbitmq'))
-        channel = connection.channel()
-
+        self.channel = self.connection.channel()
         # Declare the topic exchange
-        channel.exchange_declare(exchange='topic_logs', exchange_type='topic')
+        self.channel.exchange_declare(exchange=self.exchange_name, exchange_type='topic')
 
     def publishOrder(self, message: str) -> None:
         # Basic Publish to Exchange
-        channel.basic_publish(
-            exchange=exchange_name,
-            routing_key=routing_key,
-            body=message.encode('UTF-8'),
+        self.channel.basic_publish(
+            exchange=self.exchange_name,
+            routing_key=self.routing_key,
+            body=message.encode('utf-8'),
         )
 
         # Close Channel
-        channel.close()
+        self.channel.close()
         
         # Close Connection
-        connection.close()
+        self.connection.close()
