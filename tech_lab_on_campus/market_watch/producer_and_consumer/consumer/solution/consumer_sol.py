@@ -45,11 +45,14 @@ class mqConsumer(mqConsumerInterface):
         self.channel.basic_ack(delivery_tag = method_frame.delivery_tag)
 
         print(body.decode("utf-8"))
+
+        self.connection.close()
     
     def startConsuming(self):
         print(" [*] Waiting for messages. To exit press CTRL+C")
 
         self.channel.start_consuming()
+
     
     def __del__(self):
         print("Closing RMQ connection on destruction")
