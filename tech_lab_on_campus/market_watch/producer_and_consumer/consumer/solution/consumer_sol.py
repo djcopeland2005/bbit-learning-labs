@@ -41,7 +41,7 @@ class mqConsumer(mqConsumerInterface):
             auto_ack = False
         )
     
-    def on_message_callback(self,channel,message_frame,header_frame,body):
+    def on_message_callback(self,channel,method_frame,header_frame,body):
         self.channel.basic_ack(delivery_tag = method_frame.delivery_tag)
 
         print(body.decode("utf-8"))
